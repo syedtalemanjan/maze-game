@@ -21,10 +21,11 @@ class Maze {
     }
     current = this.grid[0][0];
   }
-    draw() {
+  draw() {
     maze.width = this.size;
     maze.height = this.size;
     maze.style.background = "black";
+    current.visited = true;
 
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.columns; c++) {
@@ -32,7 +33,17 @@ class Maze {
         grid[r][c].show(this.size, this.columns, this.rows);
       }
     }
-
+    let next = current.checkNeighbors();
+    if (next) {
+      next.visited = true;
+      this.stack.push(current);
+      current.highlight(this.columns);
+      current = next;
+    } else if (this.stack.length > 0) {
+      let popedCell = this.stack.pop();
+      current = popedCell;
+      current.highlight(this.columns);
+    }
     if (this.stack.length === 0) {
       return;
     }
@@ -59,7 +70,12 @@ class Cell {
     };
 
   }
-
+  checkNeighbors() {
+    let grid = this.parentGrid;
+    let row = this.rowNum;
+    let col = this.colNum;
+    let neighbors = [];
+  }
   #drawTopWall(x, y, size, columns, rows) {
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -83,6 +99,18 @@ class Cell {
     ctx.moveTo(x, y + size / rows);
     ctx.lineTo(x, y);
     ctx.stroke();
+  }
+  highlight(columns) {
+    let x = (this.colNum * this.parentSize) / columns;
+    let y = (this.rowNum * this.parentSize) / columns;
+
+    ctx.fillStyle = "gold";
+    ctx.fillRect(
+      x,
+      y,
+      this.parentSize / columns,
+      this.parentSize / columns
+    );
   }
   show(size, columns, rows) {
     let x = (this.colNum * size) / columns;
