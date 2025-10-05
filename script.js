@@ -50,6 +50,14 @@ class Cell {
     this.colNum = colNum;
     this.parentGrid = parentGrid;
     this.parentSize = parentSize;
+    this.visited = false;
+    this.walls = {
+      topWall: true,
+      rightWall: true,
+      bottomWall: true,
+      leftWall: true,
+    };
+
   }
 
   #drawTopWall(x, y, size, columns, rows) {
