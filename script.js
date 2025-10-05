@@ -19,7 +19,29 @@ class Maze {
     }
     current = this.grid[0][0];
   }
+    draw() {
+    maze.width = this.size;
+    maze.height = this.size;
+    maze.style.background = "black";
+
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < this.columns; c++) {
+        let grid = this.grid;
+        grid[r][c].show(this.size, this.columns, this.rows);
+      }
+    }
+
+    if (this.stack.length === 0) {
+      return;
+    }
+    setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        this.draw();
+      });
+    }, 0);
+  }
 }
+
 class Cell {
   constructor(rowNum, colNum, parentGrid, parentSize) {
     this.rowNum = rowNum;
