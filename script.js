@@ -61,18 +61,18 @@ class Cell {
   #drawRightWall(x, y, size, columns, rows) {
     ctx.beginPath();
     ctx.moveTo(x + size / columns, y);
-    ctx.lineTo(x + size / columns, y + size);
+    ctx.lineTo(x + size / columns, y + size / rows);
     ctx.stroke();
   }
   #drawBottomWall(x, y, size, columns, rows) {
     ctx.beginPath();
-    ctx.moveTo(x + size / columns, y + size );
-    ctx.lineTo(x, y + size);
+    ctx.moveTo(x + size / columns, y + size / rows);
+    ctx.lineTo(x, y + size / rows);
     ctx.stroke();
   }
   #drawLeftWall(x, y, size, columns, rows) {
     ctx.beginPath();
-    ctx.moveTo(x, y + size);
+    ctx.moveTo(x, y + size / rows);
     ctx.lineTo(x, y);
     ctx.stroke();
   }
