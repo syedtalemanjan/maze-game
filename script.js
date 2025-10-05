@@ -76,6 +76,21 @@ class Cell {
     ctx.lineTo(x, y);
     ctx.stroke();
   }
+  show(size, columns, rows) {
+    let x = (this.colNum * size) / columns;
+    let y = (this.rowNum * size) / rows;
+    ctx.strokeStyle = "white";
+    ctx.fillStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.lineCap="round"
+    if (this.walls.topWall) this.#drawTopWall(x, y, size, columns, rows);
+    if (this.walls.rightWall) this.#drawRightWall(x, y, size, columns, rows);
+    if (this.walls.bottomWall) this.#drawBottomWall(x, y, size, columns, rows);
+    if (this.walls.leftWall) this.#drawLeftWall(x, y, size, columns, rows);
+    if(this.visited){
+      ctx.fillRect(x + 1, y + 1, size / columns - 2, size);
+    }
+  }
 }
 const mazee = new Maze(1000, 25, 25);
 mazee.setup();
