@@ -1,6 +1,8 @@
 let maze = document.querySelector("#canvas");
 let ctx = maze.getContext("2d");
 
+let current;
+
 class Maze {
   constructor(size, rows, columns) {
     this.size = size;
@@ -27,7 +29,7 @@ class Maze {
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.columns; c++) {
         let grid = this.grid;
-        grid[r][c].show(this.size, this.columns, this.rows);
+        // grid[r][c].show(this.size, this.columns, this.rows);
       }
     }
 
@@ -49,4 +51,32 @@ class Cell {
     this.parentGrid = parentGrid;
     this.parentSize = parentSize;
   }
+
+  #drawTopWall(x, y, size, columns, rows) {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + size / columns, y);
+    ctx.stroke();
+  }
+  #drawRightWall(x, y, size, columns, rows) {
+    ctx.beginPath();
+    ctx.moveTo(x + size / columns, y);
+    ctx.lineTo(x + size / columns, y + size);
+    ctx.stroke();
+  }
+  #drawBottomWall(x, y, size, columns, rows) {
+    ctx.beginPath();
+    ctx.moveTo(x + size / columns, y + size );
+    ctx.lineTo(x, y + size);
+    ctx.stroke();
+  }
+  #drawLeftWall(x, y, size, columns, rows) {
+    ctx.beginPath();
+    ctx.moveTo(x, y + size);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
 }
+const mazee = new Maze(1000, 25, 25);
+mazee.setup();
+mazee.draw();
