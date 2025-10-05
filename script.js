@@ -29,7 +29,7 @@ class Maze {
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.columns; c++) {
         let grid = this.grid;
-        // grid[r][c].show(this.size, this.columns, this.rows);
+        grid[r][c].show(this.size, this.columns, this.rows);
       }
     }
 
@@ -88,7 +88,7 @@ class Cell {
     if (this.walls.bottomWall) this.#drawBottomWall(x, y, size, columns, rows);
     if (this.walls.leftWall) this.#drawLeftWall(x, y, size, columns, rows);
     if(this.visited){
-      ctx.fillRect(x + 1, y + 1, size / columns - 2, size);
+      ctx.fillRect(x + 1, y + 1, size / columns - 2, size / rows - 2);
     }
   }
 }
