@@ -75,6 +75,23 @@ class Cell {
     let row = this.rowNum;
     let col = this.colNum;
     let neighbors = [];
+
+    let top = row !== 0 ? grid[row - 1][col] : undefined;
+    let right = col !== grid.length - 1 ? grid[row][col + 1] : undefined;
+    let bottom = row !== grid.length - 1 ? grid[row + 1][col] : undefined;
+    let left = col !== 0 ? grid[row][col - 1] : undefined;
+
+    if (top && !top.visited) neighbors.push(top);
+    if (right && !right.visited) neighbors.push(right);
+    if (bottom && !bottom.visited) neighbors.push(bottom);
+    if (left && !left.visited) neighbors.push(left);
+
+    if (neighbors.length !== 0) {
+      let random = Math.floor(Math.random() * neighbors.length);
+      return neighbors[random];
+    } else {
+      return undefined;
+    }
   }
   #drawTopWall(x, y, size, columns, rows) {
     ctx.beginPath();
