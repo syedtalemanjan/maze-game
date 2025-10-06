@@ -9,6 +9,7 @@ class Maze {
     this.rows = rows;
     this.columns = columns;
     this.grid = [];
+    this.stack = [];
   }
   setup() {
     for (let x = 0; x < this.rows; x++) {
@@ -38,6 +39,7 @@ class Maze {
       next.visited = true;
       this.stack.push(current);
       current.highlight(this.columns);
+      current.removeWalls(current, next);
       current = next;
     } else if (this.stack.length > 0) {
       let popedCell = this.stack.pop();
@@ -54,7 +56,6 @@ class Maze {
     }, 0);
   }
 }
-
 class Cell {
   constructor(rowNum, colNum, parentGrid, parentSize) {
     this.rowNum = rowNum;
@@ -68,7 +69,6 @@ class Cell {
       bottomWall: true,
       leftWall: true,
     };
-
   }
   checkNeighbors() {
     let grid = this.parentGrid;
@@ -129,6 +129,24 @@ class Cell {
       this.parentSize / columns - 2
     );
   }
+  removeWalls(currentCell, nextCell) {
+    let x = currentCell.colNum - nextCell.colNum;
+    let y = currentCell.rowNum - nextCell.rowNum;
+    if (x === 1) {
+      currentCell.walls.leftWall = false;
+      nextCell.walls.rightWall = false;
+    } else if (x === -1) {
+      currentCell.walls.rightWall = false;
+      nextCell.walls.leftWall = false;
+    }
+    if (y === 1) {
+      currentCell.walls.topWall = false;
+      nextCell.walls.bottomWall = false;
+    } else if (y === -1) {
+      currentCell.walls.bottomWall = false;
+      nextCell.walls.topWall = false;
+    }
+  }
   show(size, columns, rows) {
     let x = (this.colNum * size) / columns;
     let y = (this.rowNum * size) / rows;
@@ -148,4 +166,3 @@ class Cell {
 const mazee = new Maze(1000, 25, 25);
 mazee.setup();
 mazee.draw();
-
