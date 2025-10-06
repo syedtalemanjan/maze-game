@@ -101,15 +101,15 @@ class Cell {
     ctx.stroke();
   }
   highlight(columns) {
-    let x = (this.colNum * this.parentSize) / columns;
-    let y = (this.rowNum * this.parentSize) / columns;
+    let x = (this.colNum * this.parentSize) / columns + 1;
+    let y = (this.rowNum * this.parentSize) / columns + 1;
 
     ctx.fillStyle = "gold";
     ctx.fillRect(
       x,
       y,
-      this.parentSize / columns,
-      this.parentSize / columns
+      this.parentSize / columns - 2,
+      this.parentSize / columns - 2
     );
   }
   show(size, columns, rows) {
@@ -131,3 +131,4 @@ class Cell {
 const mazee = new Maze(1000, 25, 25);
 mazee.setup();
 mazee.draw();
+
