@@ -1,7 +1,9 @@
 let maze = document.querySelector("#canvas");
 let ctx = maze.getContext("2d");
+const scoreElement = document.getElementById("score")
 
 let current;
+let score = 0;
 
 class Maze {
   constructor(size, rows, columns) {
@@ -10,12 +12,14 @@ class Maze {
     this.columns = columns;
     this.grid = [];
     this.stack = [];
+
+    this.input = new Input()
   }
   setup() {
     for (let x = 0; x < this.rows; x++) {
       let rows = [];
       for (let y = 0; y < this.columns; y++) {
-        let cell = new Cell(x, y, this.grid, this.size);
+        let cell = new Cell(x, y, this.grid, this.size,this.input);
         rows.push(cell);
       }
       this.grid.push(rows);
@@ -28,12 +32,21 @@ class Maze {
     maze.style.background = "black";
     current.visited = true;
 
+    if(current == this.grid[this.grid.length -1][this.grid.length -1] && this.stack.length === 0){
+      score+=1;
+      scoreElement.textContent = "Score: " + score;
+      const mazee = new Maze(150, 10, 10);
+      mazee.setup();
+      mazee.draw();
+      return;
+    }
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.columns; c++) {
         let grid = this.grid;
         grid[r][c].show(this.size, this.columns, this.rows);
       }
     }
+    current.highlight(this.columns)
     let next = current.checkNeighbors();
     if (next) {
       next.visited = true;
@@ -46,9 +59,28 @@ class Maze {
       current = popedCell;
       current.highlight(this.columns);
     }
-    if (this.stack.length === 0) {
-      return;
+    
+    if (this.stack.length === 0 && this.input.lastKey) {
+      const dir = this.input.lastKey;
+    
+      let nextCell = undefined;
+      if (dir === "UP" && !current.walls.topWall) {
+        nextCell = this.grid[current.rowNum - 1][current.colNum];
+      } else if (dir === "DOWN" && !current.walls.bottomWall) {
+        nextCell = this.grid[current.rowNum + 1][current.colNum];
+      } else if (dir === "LEFT" && !current.walls.leftWall) {
+        nextCell = this.grid[current.rowNum][current.colNum - 1];
+      } else if (dir === "RIGHT" && !current.walls.rightWall) {
+        nextCell = this.grid[current.rowNum][current.colNum + 1];
+      }
+    
+      if (nextCell) {
+        current = nextCell;
+      }
+
+      this.input.keys = [];
     }
+
     setTimeout(() => {
       window.requestAnimationFrame(() => {
         this.draw();
@@ -57,7 +89,8 @@ class Maze {
   }
 }
 class Cell {
-  constructor(rowNum, colNum, parentGrid, parentSize) {
+  constructor(rowNum, colNum, parentGrid, parentSize,input) {
+    this.input = input;
     this.rowNum = rowNum;
     this.colNum = colNum;
     this.parentGrid = parentGrid;
@@ -163,6 +196,54 @@ class Cell {
     }
   }
 }
-const mazee = new Maze(1000, 25, 25);
+
+class Input {
+  constructor() {
+    this.keys = [];
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp" ) {
+        this.keyPressed("UP");
+      } else if (e.key === "ArrowDown" ) {
+        this.keyPressed("DOWN");
+      } else if (e.key === "ArrowLeft" ) {
+        this.keyPressed("LEFT");
+      } else if (e.key === "ArrowRight" ) {
+        this.keyPressed("RIGHT");
+      }
+    });
+    window.addEventListener("keyup", (e) => {
+      if (e.key === "ArrowUp" ) {
+        this.keyReleased("UP");
+      } else if (e.key === "ArrowDown" ) {
+        this.keyReleased("DOWN");
+      } else if (e.key === "ArrowLeft" ) {
+        this.keyReleased("LEFT");
+      } else if (e.key === "ArrowRight" ) {
+        this.keyReleased("RIGHT");
+      }
+    });
+  }
+
+  keyPressed(key) {
+    if (this.keys.indexOf(key) === -1) {
+      this.keys.unshift(key);
+    }
+  }
+  keyReleased(key) {
+    const index = this.keys.indexOf(key);
+    this.keys.splice(index, 1);
+  }
+  get lastKey() {
+    return this.keys[0];
+  }
+}
+
+window.addEventListener("keydown", (e) => {
+  if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+    e.preventDefault();
+  }
+}, false);
+const mazee = new Maze(150, 10, 10);
 mazee.setup();
 mazee.draw();
